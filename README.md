@@ -1,6 +1,22 @@
 # Autonomous Research Agent
 
-Give it a topic → it researches, writes a full report, safety-checks it, caches it, and remembers it. Built on AWS with a real multi-agent pipeline, red teaming, and LLM evaluation on every request.
+A production-grade, self-hosted research assistant: give it a topic and it autonomously searches the web, summarizes sources, writes a structured report, safety-checks the output, caches the result, and remembers it for next time — all running on your own AWS account, not a third-party SaaS.
+
+It's built as a **real multi-agent system**, not a single prompt-and-respond wrapper:
+
+1. **Search** — gathers source material for the topic
+2. **Summarize** — condenses sources into key findings
+3. **Write** — drafts the full report
+4. **Verify** — checks the draft for accuracy and flags issues before it's returned
+
+Every request also runs through two safety layers that most hobby projects skip entirely:
+
+- **AWS Bedrock Guardrails** screen both the user's input and the model's output for harmful content in real time.
+- **PyRIT** (Microsoft's open-source red-teaming framework) continuously attacks the deployed app — jailbreaks, prompt injection, crescendo escalation, authority-claim bypasses — on a schedule and on demand, via its own dashboard, so you can see whether the guardrails actually hold up under adversarial pressure rather than just trusting that they do.
+
+On top of that, every report is scored automatically by an LLM-as-judge pipeline (relevance, completeness, hallucination risk, quality) and traced end-to-end in LangSmith, so you can audit *why* the agent produced a given answer, not just *what* it produced.
+
+The whole stack — API, agent pipeline, LLM gateway, red-team dashboard, databases, and networking — is defined in Terraform and deployed via GitHub Actions, so a fresh environment is one `terraform apply` and one `git push` away.
 
 ---
 
